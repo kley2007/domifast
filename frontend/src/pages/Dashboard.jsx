@@ -4,7 +4,8 @@ import { useAuth } from "../context/AuthContext";
 function Dashboard() {
   const { usuario, logout } = useAuth();
 
-  const API_URL = "http://localhost:3001/contactos";
+  // API PÚBLICA DE RENDER
+  const API_URL = "https://domifast-api.onrender.com/contactos";
 
   const [pedidos, setPedidos] = useState([]);
   const [vista, setVista] = useState("registrar");
@@ -26,10 +27,6 @@ function Dashboard() {
   });
 
   const [errores, setErrores] = useState({});
-
-  // ==========================================
-  // FORMATO DEL TELÉFONO
-  // ==========================================
 
   const formatearTelefono = (valor) => {
     const numeros = String(valor || "")
@@ -57,10 +54,6 @@ function Dashboard() {
     );
   };
 
-  // ==========================================
-  // CARGAR PEDIDOS
-  // ==========================================
-
   const cargarPedidos = async () => {
     try {
       setCargando(true);
@@ -77,14 +70,12 @@ function Dashboard() {
       setPedidos(
         Array.isArray(datos) ? datos : []
       );
-
     } catch (error) {
       console.error(error);
 
       setMensaje(
-        "❌ No se pudieron cargar los pedidos. Verifica que el backend esté funcionando."
+        "❌ No se pudieron cargar los pedidos. Verifica la conexión con el servidor."
       );
-
     } finally {
       setCargando(false);
     }
@@ -93,10 +84,6 @@ function Dashboard() {
   useEffect(() => {
     cargarPedidos();
   }, []);
-
-  // ==========================================
-  // CAMBIAR FORMULARIO
-  // ==========================================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,20 +107,20 @@ function Dashboard() {
     setMensaje("");
   };
 
-  // ==========================================
-  // VALIDAR FORMULARIO
-  // ==========================================
-
   const validarFormulario = () => {
     const nuevosErrores = {};
 
-    const nombre = formulario.nombre.trim();
-    const direccion = formulario.direccion.trim();
+    const nombre =
+      formulario.nombre.trim();
+
+    const direccion =
+      formulario.direccion.trim();
 
     const telefono =
       formulario.telefono.replace(/\D/g, "");
 
-    const pedido = formulario.pedido.trim();
+    const pedido =
+      formulario.pedido.trim();
 
     if (!nombre) {
       nuevosErrores.nombre =
@@ -177,10 +164,6 @@ function Dashboard() {
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  // ==========================================
-  // REGISTRAR
-  // ==========================================
-
   const registrarPedido = async (e) => {
     e.preventDefault();
 
@@ -197,19 +180,31 @@ function Dashboard() {
       setGuardando(true);
 
       const nuevoPedido = {
-        nombre: formulario.nombre.trim(),
-        direccion: formulario.direccion.trim(),
-        telefono: formulario.telefono,
-        pedido: formulario.pedido.trim()
+        nombre:
+          formulario.nombre.trim(),
+
+        direccion:
+          formulario.direccion.trim(),
+
+        telefono:
+          formulario.telefono,
+
+        pedido:
+          formulario.pedido.trim()
       };
 
-      const respuesta = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(nuevoPedido)
-      });
+      const respuesta = await fetch(
+        API_URL,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body:
+            JSON.stringify(nuevoPedido)
+        }
+      );
 
       if (!respuesta.ok) {
         throw new Error(
@@ -217,7 +212,8 @@ function Dashboard() {
         );
       }
 
-      const creado = await respuesta.json();
+      const creado =
+        await respuesta.json();
 
       setPedidos((actuales) => [
         ...actuales,
@@ -238,22 +234,16 @@ function Dashboard() {
       );
 
       setVista("administrar");
-
     } catch (error) {
       console.error(error);
 
       setMensaje(
         "❌ No se pudo registrar el pedido."
       );
-
     } finally {
       setGuardando(false);
     }
   };
-
-  // ==========================================
-  // INICIAR EDICIÓN
-  // ==========================================
 
   const comenzarEdicion = (pedido) => {
     console.log(
@@ -284,10 +274,6 @@ function Dashboard() {
     setMensaje("");
   };
 
-  // ==========================================
-  // CAMBIAR TELÉFONO
-  // ==========================================
-
   const cambiarTelefonoEdicion = (e) => {
     setEditando((actual) => ({
       ...actual,
@@ -298,10 +284,6 @@ function Dashboard() {
 
     setMensaje("");
   };
-
-  // ==========================================
-  // GUARDAR EDICIÓN
-  // ==========================================
 
   const guardarEdicion = async () => {
     if (!editando) {
@@ -393,7 +375,8 @@ function Dashboard() {
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type":
+              "application/json"
           },
           body: JSON.stringify(datos)
         }
@@ -422,22 +405,16 @@ function Dashboard() {
       setMensaje(
         "✅ Pedido actualizado correctamente."
       );
-
     } catch (error) {
       console.error(error);
 
       setMensaje(
         "❌ No se pudo actualizar el pedido."
       );
-
     } finally {
       setGuardando(false);
     }
   };
-
-  // ==========================================
-  // ELIMINAR
-  // ==========================================
 
   const eliminarPedido = async (id) => {
     const confirmar =
@@ -474,7 +451,6 @@ function Dashboard() {
       setMensaje(
         "✅ Pedido eliminado correctamente."
       );
-
     } catch (error) {
       console.error(error);
 
@@ -484,21 +460,18 @@ function Dashboard() {
     }
   };
 
-  // ==========================================
-  // FILTRAR Y ORDENAR
-  // ==========================================
-
   const pedidosFiltrados =
     [...pedidos]
       .filter((pedido) =>
-        String(pedido.nombre || "")
+        String(
+          pedido.nombre || ""
+        )
           .toLowerCase()
           .includes(
             busqueda.toLowerCase()
           )
       )
       .sort((a, b) => {
-
         const resultado =
           String(a.nombre || "")
             .localeCompare(
@@ -509,10 +482,6 @@ function Dashboard() {
           ? resultado
           : -resultado;
       });
-
-  // ==========================================
-  // INTERFAZ
-  // ==========================================
 
   return (
     <div className="dashboard-page">
@@ -541,7 +510,6 @@ function Dashboard() {
 
       </nav>
 
-
       <main className="dashboard-content">
 
         <section className="welcome-section">
@@ -557,9 +525,6 @@ function Dashboard() {
           </p>
 
         </section>
-
-
-        {/* PESTAÑAS */}
 
         <div className="dashboard-tabs">
 
@@ -578,7 +543,6 @@ function Dashboard() {
             📝 Registrar pedido
           </button>
 
-
           <button
             type="button"
             className={
@@ -596,9 +560,6 @@ function Dashboard() {
 
         </div>
 
-
-        {/* MENSAJE */}
-
         {mensaje && (
 
           <div
@@ -614,11 +575,6 @@ function Dashboard() {
 
         )}
 
-
-        {/* =====================================
-            REGISTRAR
-        ===================================== */}
-
         {vista === "registrar" && (
 
           <section className="card">
@@ -633,7 +589,9 @@ function Dashboard() {
             </p>
 
             <form
-              onSubmit={registrarPedido}
+              onSubmit={
+                registrarPedido
+              }
             >
 
               <div className="form-group">
@@ -650,8 +608,12 @@ function Dashboard() {
                   }
                   type="text"
                   name="nombre"
-                  value={formulario.nombre}
-                  onChange={handleChange}
+                  value={
+                    formulario.nombre
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Ej. Carlos Pérez"
                 />
 
@@ -662,7 +624,6 @@ function Dashboard() {
                 )}
 
               </div>
-
 
               <div className="form-group">
 
@@ -678,8 +639,12 @@ function Dashboard() {
                   }
                   type="text"
                   name="direccion"
-                  value={formulario.direccion}
-                  onChange={handleChange}
+                  value={
+                    formulario.direccion
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Ej. Carrera 45 #30-20"
                 />
 
@@ -690,7 +655,6 @@ function Dashboard() {
                 )}
 
               </div>
-
 
               <div className="form-group">
 
@@ -706,8 +670,12 @@ function Dashboard() {
                   }
                   type="text"
                   name="telefono"
-                  value={formulario.telefono}
-                  onChange={handleChange}
+                  value={
+                    formulario.telefono
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="300 456 2137"
                   inputMode="numeric"
                   maxLength="12"
@@ -725,7 +693,6 @@ function Dashboard() {
 
               </div>
 
-
               <div className="form-group">
 
                 <label>
@@ -739,8 +706,12 @@ function Dashboard() {
                       : "form-input"
                   }
                   name="pedido"
-                  value={formulario.pedido}
-                  onChange={handleChange}
+                  value={
+                    formulario.pedido
+                  }
+                  onChange={
+                    handleChange
+                  }
                   placeholder="Ej. 2 hamburguesas y 1 gaseosa"
                   rows="4"
                 />
@@ -752,7 +723,6 @@ function Dashboard() {
                 )}
 
               </div>
-
 
               <button
                 className="primary-button"
@@ -769,11 +739,6 @@ function Dashboard() {
           </section>
 
         )}
-
-
-        {/* =====================================
-            ADMINISTRAR
-        ===================================== */}
 
         {vista === "administrar" && (
 
@@ -793,7 +758,6 @@ function Dashboard() {
 
               </div>
 
-
               <div className="search-controls">
 
                 <input
@@ -807,7 +771,6 @@ function Dashboard() {
                     )
                   }
                 />
-
 
                 <select
                   className="sort-select"
@@ -833,7 +796,6 @@ function Dashboard() {
 
             </div>
 
-
             {cargando ? (
 
               <div className="loading">
@@ -858,10 +820,6 @@ function Dashboard() {
                       key={pedido.id}
                     >
 
-                      {/* =====================
-                          EDITAR
-                      ===================== */}
-
                       {editando &&
                       String(editando.id) ===
                       String(pedido.id) ? (
@@ -871,7 +829,6 @@ function Dashboard() {
                           <h3>
                             ✏️ Editar pedido
                           </h3>
-
 
                           <div className="edit-form">
 
@@ -893,7 +850,6 @@ function Dashboard() {
                               }
                             />
 
-
                             <label>
                               Dirección
                             </label>
@@ -911,7 +867,6 @@ function Dashboard() {
                                 })
                               }
                             />
-
 
                             <label>
                               Teléfono
@@ -934,7 +889,6 @@ function Dashboard() {
                               Formato: 300 456 2137
                             </small>
 
-
                             <label>
                               Pedido
                             </label>
@@ -953,7 +907,6 @@ function Dashboard() {
                               rows="4"
                             />
 
-
                             <div className="order-actions">
 
                               <button
@@ -971,12 +924,13 @@ function Dashboard() {
                                   : "💾 Guardar"}
                               </button>
 
-
                               <button
                                 type="button"
                                 className="cancel-button"
                                 onClick={() =>
-                                  setEditando(null)
+                                  setEditando(
+                                    null
+                                  )
                                 }
                                 disabled={
                                   guardando
@@ -992,10 +946,6 @@ function Dashboard() {
                         </div>
 
                       ) : (
-
-                        /* =====================
-                           PEDIDO
-                        ===================== */
 
                         <>
 
@@ -1027,7 +977,6 @@ function Dashboard() {
                             {pedido.pedido}
                           </p>
 
-
                           <div className="order-actions">
 
                             <button
@@ -1041,7 +990,6 @@ function Dashboard() {
                             >
                               ✏️ Editar
                             </button>
-
 
                             <button
                               type="button"
