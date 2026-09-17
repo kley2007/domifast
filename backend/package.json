@@ -1,0 +1,16 @@
+{
+  "name": "domifast-api",
+  "version": "1.0.0",
+  "description": "API para DomiFast - Gestor de Pedidos a Domicilio",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.15"
+  }
+}

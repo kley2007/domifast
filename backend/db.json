@@ -1,0 +1,19 @@
+{
+  "contactos": [
+    {
+      "nombre": "felipe",
+      "direccion": "crra63#103",
+      "telefono": "654 311 3579",
+      "pedido": "2 perros y 2 gaseosas",
+      "id": "aUQ-NXp0WEw"
+    },
+    {
+      "nombre": "ana lopez",
+      "direccion": "crra89#39",
+      "telefono": "321 326 7654",
+      "pedido": "1 hamburguesa, 2 perros y 4 gaseosas",
+      "id": "0LeXObWfQgo"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
